@@ -1,0 +1,65 @@
+[MySQL]
+
+Select Ubuntu
+
+Log on to Username : msrit
+
+                        Password : ritcselab2
+
+Open terminal 
+
+sudo su 
+
+ password : ritcselab2
+
+#cd /opt/lampp/./lampp start    
+
+cd  /opt/lampp/bin># ./mysql –u <username> -h 172.1.14.200 –P 3306 –p
+
+      Enter Password:cs1234    mysql prompt appears on the screen
+
+For eg. ./mysql –u cs5a01 –h 172.1.14.200 –P 3306 –p 
+
+mysql>show databases
+
+mysql>use cs5a01
+
+mysql>show tables
+
+create table stud (usn varchar(10), name varchar(20), marks int(3));
+
+insert into stud values (‘cs-01’,’aaa’,’45’);
+
+commit;         select * from stud;
+
+
+
+[MongoDB]
+
+Select Ubuntu
+
+Log on to Username : guest1
+
+                        Password : gust1cse
+
+Open terminal 
+
+$mongo --host 172.1.14.200 -u <username> --authenticationDatabase "<username>" -p
+
+Enter Password: 5cs          > prompt appears on the screen
+
+For. Eg.,
+
+mongosh  --host  172.1.14.200 -u cs5a01 --authenticationDatabase "cs5a01" –p
+
+Enter Password: 5cs
+
+>use cs5a01
+
+>db.foo.insert({x:1,y:1})
+
+>>show dbs
+
+>show collections
+
+>db.foo.find()

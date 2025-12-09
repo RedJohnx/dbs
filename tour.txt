@@ -1,0 +1,51 @@
+[tour]
+db.tourist.insertMany([
+  {
+    "place": "Mysore Palace",
+    "address": { "state": "Karnataka" },
+    "attractions": "Light Show",
+    "best_time": "October",
+    "transport": "Rail",
+    "accommodation": "Hotel Mayura",
+    "food": "Mysore Pak"
+  },
+  {
+    "place": "Coorg",
+    "address": { "state": "Karnataka" },
+    "attractions": "Abbey Falls",
+    "best_time": "December",
+    "transport": "Bus",
+    "accommodation": "Homestay",
+    "food": "Pork Curry"
+  },
+  {
+    "place": "Munnar",
+    "address": { "state": "Kerala" },
+    "attractions": "Tea Gardens",
+    "best_time": "January",
+    "transport": "Bus",
+    "accommodation": "Resort",
+    "food": "Appam"
+  },
+  {
+    "place": "Alleppey",
+    "address": { "state": "Kerala" },
+    "attractions": "Houseboat",
+    "best_time": "November",
+    "transport": "Boat",
+    "accommodation": "Houseboat",
+    "food": "Fish Curry"
+  }
+])
+
+db.tourist.find(
+  { "address.state": "Karnataka" }
+)
+
+db.tourist.find(
+  { "address.state": "Kerala" },
+  { "attractions": 1, "accommodation": 0, "food": 0 }
+)
+
+db.tourist.find().sort({ "address.state": 1 })
+

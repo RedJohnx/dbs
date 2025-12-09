@@ -1,0 +1,308 @@
+[Only Queries contains NATURAL JOIN wherever needed]
+
+### **1. SAILORS Database**
+
+**i. Find the names of sailors who have reserved at least one boat.**
+
+```sql
+SELECT DISTINCT Sname 
+FROM SAILORS 
+NATURAL JOIN RESERVES;
+```
+
+**ii. Find the Sid’s of sailors who have reserved a red or a green boat.**
+
+```sql
+SELECT DISTINCT Sid 
+FROM RESERVES 
+NATURAL JOIN BOATS 
+WHERE Colour IN ('Red', 'Green');
+```
+
+**iii. Find the Sid’s of sailors who have not reserved a boat.**
+
+```sql
+SELECT Sid FROM SAILORS 
+WHERE Sid NOT IN (SELECT Sid FROM RESERVES);
+```
+
+-----
+
+### **2. EMPLOYEE Database**
+
+**i. Retrieve the name of all employees whose salary is greater than the salary of all employees in dept 5.**
+
+```sql
+SELECT Fname, Lname 
+FROM EMPLOYEE 
+WHERE Salary > ALL (SELECT Salary FROM EMPLOYEE WHERE Dno = 5);
+```
+
+**ii. Retrieve the ssn of all employees who work on project numbers 1, 2 or 3.**
+
+```sql
+SELECT DISTINCT ESSN 
+FROM WORKS_ON 
+WHERE Pno IN (1, 2, 3);
+```
+
+**iii. Display the total Number of hours put in by all employees on every project.**
+
+```sql
+SELECT Pno, SUM(Hours) 
+FROM WORKS_ON 
+GROUP BY Pno;
+```
+
+-----
+
+### **3. AIRCRAFT Database (Set 1)**
+
+**i. Find the employee ID’s of employee who make the highest salary.**
+
+```sql
+SELECT Emp_ID 
+FROM EMPLOYEE 
+WHERE Salary = (SELECT MAX(Salary) FROM EMPLOYEE);
+```
+
+**ii. Find the name of aircrafts such that all pilots certified to operate them earn more than 50000.**
+
+```sql
+SELECT Aircraft_name 
+FROM AIRCRAFT 
+WHERE Aircraft_ID NOT IN (
+    SELECT Aircraft_ID 
+    FROM CERTIFIED NATURAL JOIN EMPLOYEE 
+    WHERE Salary <= 50000
+);
+```
+
+**iii. Find the employees who are not certified for operating any aircraft.**
+
+```sql
+SELECT Emp_ID, Ename 
+FROM EMPLOYEE 
+WHERE Emp_ID NOT IN (SELECT Emp_ID FROM CERTIFIED);
+```
+
+-----
+
+### **4. SUPPLY-PARTS Database**
+
+**i. Find the Sid’s of suppliers who supply a green part.**
+
+```sql
+SELECT DISTINCT Sid 
+FROM SHIPMENT 
+NATURAL JOIN PART 
+WHERE Color = 'Green';
+```
+
+**ii. For every supplier print the name of the supplier and the total number of parts that he/she supplies.**
+
+```sql
+SELECT Sname, COUNT(PID) 
+FROM SUPPLIER 
+NATURAL JOIN SHIPMENT 
+GROUP BY Sname;
+```
+
+**iii. Update the part color supplied by supplier s3 to yellow.**
+
+```sql
+UPDATE PART 
+SET Color = 'Yellow' 
+WHERE PID IN (SELECT PID FROM SHIPMENT WHERE Sid = 3);
+```
+
+-----
+
+### **5. AIRCRAFT Database (Set 2)**
+
+**i. Find the names of pilots certified for Boeing aircraft.**
+
+```sql
+SELECT DISTINCT Ename 
+FROM EMPLOYEE 
+NATURAL JOIN CERTIFIED 
+NATURAL JOIN AIRCRAFT 
+WHERE Aircraft_name LIKE '%Boeing%';
+```
+
+**ii. Arrange the Aircrafts with respect to the ascending order of distance.**
+
+```sql
+SELECT * FROM AIRCRAFT 
+ORDER BY Cruising_range ASC;
+```
+
+**iii. Find the name of pilots who can operate flights with a range greater than 3000 miles but are not certified on any Boeing aircraft.**
+
+```sql
+SELECT DISTINCT Ename 
+FROM EMPLOYEE 
+NATURAL JOIN CERTIFIED 
+NATURAL JOIN AIRCRAFT 
+WHERE Cruising_range > 3000 
+AND Emp_ID NOT IN (
+    SELECT Emp_ID 
+    FROM CERTIFIED NATURAL JOIN AIRCRAFT 
+    WHERE Aircraft_name LIKE '%Boeing%'
+);
+```
+
+-----
+
+### **6. EMPLOYEE & DEPENDENT Database**
+
+**i. For each department, retrieve the department name and the average salary of all employees working in that department.**
+
+```sql
+SELECT Dname, AVG(Salary) 
+FROM DEPARTMENT D 
+JOIN EMPLOYEE E ON D.Dnumber = E.Dno 
+GROUP BY Dname;
+```
+
+**ii. List the names of managers who have at least one dependent.**
+
+```sql
+SELECT Fname, Lname 
+FROM EMPLOYEE 
+WHERE SSN IN (SELECT MgrSSN FROM DEPARTMENT) 
+AND SSN IN (SELECT ESSN FROM DEPENDENT);
+```
+
+**iii. Display the details of all departments having ‘tech’ as their substring.**
+
+```sql
+SELECT * FROM DEPARTMENT 
+WHERE Dname LIKE '%tech%';
+```
+
+-----
+
+### **7. ACCIDENT TRACKER**
+
+**i. Display the unique Regno’s of the cars involved in accidents.**
+
+```sql
+SELECT DISTINCT Regno 
+FROM PARTICIPATED;
+```
+
+**ii. Display the car Regno and model of the car which has the maximum damage amount.**
+
+```sql
+SELECT Regno, model 
+FROM CAR 
+NATURAL JOIN PARTICIPATED 
+WHERE damage_amount = (SELECT MAX(damage_amount) FROM PARTICIPATED);
+```
+
+**iii. Display the number of cars owned by each driver.**
+
+```sql
+SELECT driver_id, COUNT(Regno) 
+FROM OWNS 
+GROUP BY driver_id;
+```
+
+-----
+
+### **8. CRICKET Database**
+
+**i. Display the sorted list of ground names where Australia has played as team1.**
+
+```sql
+SELECT Ground 
+FROM MATCHES 
+WHERE Team1 = 'Australia' 
+ORDER BY Ground;
+```
+
+**ii. Find the match information of all matches in which Dhoni did batting.**
+
+```sql
+SELECT M.* FROM MATCHES M 
+NATURAL JOIN BATTING 
+NATURAL JOIN PLAYER 
+WHERE Lname = 'Dhoni';
+```
+
+**iii. Find the names of players who did batting in match 2689.**
+
+```sql
+SELECT Fname, Lname 
+FROM PLAYER 
+NATURAL JOIN BATTING 
+WHERE MatchId = 2689;
+```
+
+-----
+
+### **9. SHIPMENT (Set 1)**
+
+**i. List the customer names who have placed more than 2 orders.**
+
+```sql
+SELECT cname 
+FROM CUSTOMER 
+NATURAL JOIN ORDERS 
+GROUP BY cname, cust_id 
+HAVING COUNT(order_id) > 2;
+```
+
+**ii. Find the total order amount for each day.**
+
+```sql
+SELECT odate, SUM(ord_Amt) 
+FROM ORDERS 
+GROUP BY odate;
+```
+
+**iii. List the customer details who has the largest order amount.**
+
+```sql
+SELECT C.* FROM CUSTOMER C 
+NATURAL JOIN ORDERS 
+WHERE ord_Amt = (SELECT MAX(ord_Amt) FROM ORDERS);
+```
+
+-----
+
+### **10. SHIPMENT (Set 2)**
+
+**i. List name of the customer, no. of orders placed by each customer residing in Bangalore city.**
+
+```sql
+SELECT cname, COUNT(order_id) 
+FROM CUSTOMER 
+NATURAL JOIN ORDERS 
+WHERE city = 'Bangalore' 
+GROUP BY cname, cust_id;
+```
+
+**ii. List the names of the customers who have ordered at least 3 items.**
+
+```sql
+SELECT cname 
+FROM CUSTOMER 
+NATURAL JOIN ORDERS 
+NATURAL JOIN ORDER_ITEM 
+GROUP BY cname, cust_id 
+HAVING COUNT(item_id) >= 3;
+```
+
+**iii. List the customer names who have not ordered for item no. 10.**
+
+```sql
+SELECT cname 
+FROM CUSTOMER 
+WHERE cust_id NOT IN (
+    SELECT cust_id 
+    FROM ORDERS NATURAL JOIN ORDER_ITEM 
+    WHERE item_id = 10
+);
+```

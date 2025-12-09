@@ -1,0 +1,78 @@
+-- 1. Create CUSTOMER
+CREATE TABLE CUSTOMER (
+    cust_id INT,
+    cname VARCHAR(20),
+    city VARCHAR(20),
+    PRIMARY KEY (cust_id)
+);
+
+-- 2. Create ORDERS (Renamed from ORDER)
+CREATE TABLE ORDERS (
+    order_id INT,
+    odate DATE,
+    cust_id INT,
+    ord_Amt INT,
+    PRIMARY KEY (order_id),
+    FOREIGN KEY (cust_id) REFERENCES CUSTOMER(cust_id)
+);
+
+-- 3. Create ITEM
+CREATE TABLE ITEM (
+    item_id INT,
+    unit_price INT,
+    PRIMARY KEY (item_id)
+);
+
+-- 4. Create ORDER_ITEM
+CREATE TABLE ORDER_ITEM (
+    order_id INT,
+    item_id INT,
+    qty INT,
+    PRIMARY KEY (order_id, item_id),
+    FOREIGN KEY (order_id) REFERENCES ORDERS(order_id),
+    FOREIGN KEY (item_id) REFERENCES ITEM(item_id)
+);
+
+-- 5. Create SHIPMENT
+CREATE TABLE SHIPMENT (
+    order_id INT,
+    ship_date DATE,
+    PRIMARY KEY (order_id),
+    FOREIGN KEY (order_id) REFERENCES ORDERS(order_id)
+);
+
+-- Insert Customers
+INSERT INTO CUSTOMER VALUES (1, 'Ravi', 'Bangalore');
+INSERT INTO CUSTOMER VALUES (2, 'Sita', 'Mysore');
+INSERT INTO CUSTOMER VALUES (3, 'Gita', 'Bangalore');
+
+-- Insert Orders
+-- Ravi (1) makes 3 orders (More than 2)
+INSERT INTO ORDERS VALUES (101, '2023-01-01', 1, 5000);
+INSERT INTO ORDERS VALUES (102, '2023-01-02', 1, 2000);
+INSERT INTO ORDERS VALUES (103, '2023-01-03', 1, 1000);
+-- Sita (2) makes 1 big order
+INSERT INTO ORDERS VALUES (104, '2023-01-01', 2, 10000);
+
+-- Insert Items
+INSERT INTO ITEM VALUES (10, 500);
+INSERT INTO ITEM VALUES (11, 200);
+
+-- Insert Order_Items
+INSERT INTO ORDER_ITEM VALUES (101, 10, 5); -- Ravi bought item 10
+INSERT INTO ORDER_ITEM VALUES (104, 11, 2); -- Sita bought item 11 (NOT 10)
+
+SELECT C.cname 
+FROM CUSTOMER C, ORDERS O
+WHERE C.cust_id = O.cust_id
+GROUP BY C.cname, C.cust_id
+HAVING COUNT(O.order_id) > 2;
+
+SELECT odate, SUM(ord_Amt) AS Total_Amount
+FROM ORDERS
+GROUP BY odate;
+
+SELECT C.* FROM CUSTOMER C, ORDERS O
+WHERE C.cust_id = O.cust_id
+AND O.ord_Amt = (SELECT MAX(ord_Amt) FROM ORDERS);
+

@@ -1,0 +1,79 @@
+-- 1. Create PERSON
+CREATE TABLE PERSON (
+    driver_id VARCHAR(10),
+    name VARCHAR(20),
+    address VARCHAR(50),
+    PRIMARY KEY (driver_id)
+);
+
+-- 2. Create CAR
+CREATE TABLE CAR (
+    Regno VARCHAR(10),
+    model VARCHAR(20),
+    year INT,
+    PRIMARY KEY (Regno)
+);
+
+-- 3. Create ACCIDENT
+CREATE TABLE ACCIDENT (
+    report_number INT,
+    acc_date DATE,
+    location VARCHAR(20),
+    PRIMARY KEY (report_number)
+);
+
+-- 4. Create OWNS
+CREATE TABLE OWNS (
+    driver_id VARCHAR(10),
+    Regno VARCHAR(10),
+    PRIMARY KEY (driver_id, Regno),
+    FOREIGN KEY (driver_id) REFERENCES PERSON(driver_id),
+    FOREIGN KEY (Regno) REFERENCES CAR(Regno)
+);
+
+-- 5. Create PARTICIPATED
+CREATE TABLE PARTICIPATED (
+    driver_id VARCHAR(10),
+    Regno VARCHAR(10),
+    report_number INT,
+    damage_amount INT,
+    PRIMARY KEY (driver_id, Regno, report_number),
+    FOREIGN KEY (driver_id) REFERENCES PERSON(driver_id),
+    FOREIGN KEY (Regno) REFERENCES CAR(Regno),
+    FOREIGN KEY (report_number) REFERENCES ACCIDENT(report_number)
+);
+
+-- Insert Person
+INSERT INTO PERSON VALUES ('D1', 'Driver Smith', 'Street 1');
+INSERT INTO PERSON VALUES ('D2', 'Driver Jane', 'Street 2');
+INSERT INTO PERSON VALUES ('D3', 'Driver Bob', 'Street 3');
+
+-- Insert Car
+INSERT INTO CAR VALUES ('KA01', 'Honda City', 2020);
+INSERT INTO CAR VALUES ('KA02', 'Hyundai Creta', 2021);
+INSERT INTO CAR VALUES ('KA03', 'BMW', 2022);
+
+-- Insert Accident
+INSERT INTO ACCIDENT VALUES (101, '2023-01-01', 'Main Road');
+INSERT INTO ACCIDENT VALUES (102, '2023-02-01', 'Highway');
+
+-- Insert Owns
+INSERT INTO OWNS VALUES ('D1', 'KA01');
+INSERT INTO OWNS VALUES ('D2', 'KA02');
+INSERT INTO OWNS VALUES ('D3', 'KA03');
+
+-- Insert Participated (Accident Data)
+INSERT INTO PARTICIPATED VALUES ('D1', 'KA01', 101, 10000);
+INSERT INTO PARTICIPATED VALUES ('D2', 'KA02', 102, 50000); -- Max Damage
+
+SELECT DISTINCT Regno 
+FROM PARTICIPATED;
+
+SELECT C.Regno, C.model
+FROM CAR C, PARTICIPATED P
+WHERE C.Regno = P.Regno
+AND P.damage_amount = (SELECT MAX(damage_amount) FROM PARTICIPATED);
+
+SELECT driver_id, COUNT(Regno) AS Car_Count
+FROM OWNS
+GROUP BY driver_id;

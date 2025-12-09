@@ -1,0 +1,24 @@
+[9 and 10 table creation and insertion are same]
+
+SELECT C.cname, COUNT(O.order_id) AS No_Of_Orders
+FROM CUSTOMER C, ORDERS O
+WHERE C.cust_id = O.cust_id
+AND C.city = 'Bangalore'
+GROUP BY C.cname, C.cust_id;
+
+SELECT DISTINCT C.cname
+FROM CUSTOMER C, ORDERS O, ORDER_ITEM OI
+WHERE C.cust_id = O.cust_id
+AND O.order_id = OI.order_id
+GROUP BY C.cname, C.cust_id
+HAVING COUNT(OI.item_id) >= 3;
+
+SELECT cname 
+FROM CUSTOMER 
+WHERE cust_id NOT IN (
+    SELECT O.cust_id 
+    FROM ORDERS O, ORDER_ITEM OI 
+    WHERE O.order_id = OI.order_id 
+    AND OI.item_id = 10
+);
+

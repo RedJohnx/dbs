@@ -1,0 +1,90 @@
+-- 1. Create DEPARTMENT first (so Employee can link to it)
+CREATE TABLE DEPARTMENT (
+    Dname VARCHAR(20),
+    Dnumber INT,
+    MgrSSN INT,
+    MgrStartDate DATE,
+    PRIMARY KEY (Dnumber)
+);
+
+-- 2. Create EMPLOYEE
+CREATE TABLE EMPLOYEE (
+    Fname VARCHAR(15),
+    Lname VARCHAR(15),
+    SSN INT,
+    Addrs VARCHAR(50),
+    Sex CHAR(1),
+    Salary INT,
+    SuperSSN INT,
+    Dno INT,
+    PRIMARY KEY (SSN),
+    FOREIGN KEY (Dno) REFERENCES DEPARTMENT(Dnumber),
+    FOREIGN KEY (SuperSSN) REFERENCES EMPLOYEE(SSN)
+);
+
+-- 3. Now link DEPARTMENT back to EMPLOYEE (Circular Logic Fix)
+ALTER TABLE DEPARTMENT ADD FOREIGN KEY (MgrSSN) REFERENCES EMPLOYEE(SSN);
+
+-- 4. Create PROJECT
+CREATE TABLE PROJECT (
+    Pno INT,
+    Pname VARCHAR(20),
+    Dnum INT,
+    PRIMARY KEY (Pno),
+    FOREIGN KEY (Dnum) REFERENCES DEPARTMENT(Dnumber)
+);
+
+-- 5. Create WORKS_ON (Composite Key: ESSN + Pno)
+CREATE TABLE WORKS_ON (
+    ESSN INT,
+    Pno INT,
+    Hours INT,
+    PRIMARY KEY (ESSN, Pno),
+    FOREIGN KEY (ESSN) REFERENCES EMPLOYEE(SSN),
+    FOREIGN KEY (Pno) REFERENCES PROJECT(Pno)
+);
+-- Insert Departments
+INSERT INTO DEPARTMENT VALUES ('Research', 5, NULL, '2020-01-01');
+INSERT INTO DEPARTMENT VALUES ('Admin', 1, NULL, '2020-01-01');
+INSERT INTO DEPARTMENT VALUES ('IT', 4, NULL, '2020-01-01');
+
+-- Insert Employees (SSN 1 is the Boss, SuperSSN is NULL)
+INSERT INTO EMPLOYEE VALUES ('John', 'Smith', 1, 'Houston, TX', 'M', 60000, NULL, 5);
+INSERT INTO EMPLOYEE VALUES ('Franklin', 'Wong', 2, 'Houston, TX', 'M', 40000, 1, 5);
+INSERT INTO EMPLOYEE VALUES ('Alicia', 'Zelaya', 3, 'Spring, TX', 'F', 25000, 1, 4);
+INSERT INTO EMPLOYEE VALUES ('Jennifer', 'Wallace', 4, 'Bellaire, TX', 'F', 43000, 2, 5);
+INSERT INTO EMPLOYEE VALUES ('Ramesh', 'Narayan', 5, 'Humble, TX', 'M', 38000, 2, 5);
+
+-- Update Department Managers
+UPDATE DEPARTMENT SET MgrSSN = 1 WHERE Dnumber = 5;
+UPDATE DEPARTMENT SET MgrSSN = 3 WHERE Dnumber = 4;
+
+-- Insert Projects
+INSERT INTO PROJECT VALUES (1, 'ProductX', 5);
+INSERT INTO PROJECT VALUES (2, 'ProductY', 5);
+INSERT INTO PROJECT VALUES (3, 'ProductZ', 5);
+INSERT INTO PROJECT VALUES (10, 'Computerization', 4);
+
+-- Insert Works_On
+INSERT INTO WORKS_ON VALUES (1, 1, 32);
+INSERT INTO WORKS_ON VALUES (1, 2, 8);
+INSERT INTO WORKS_ON VALUES (2, 1, 10);
+INSERT INTO WORKS_ON VALUES (2, 2, 10);
+INSERT INTO WORKS_ON VALUES (2, 3, 10);
+
+SELECT Fname, Lname 
+FROM EMPLOYEE 
+WHERE Salary > ALL (
+    SELECT Salary 
+    FROM EMPLOYEE 
+    WHERE Dno = 5
+);
+
+SELECT DISTINCT ESSN 
+FROM WORKS_ON 
+WHERE Pno IN (1, 2, 3);
+
+SELECT Pno, SUM(Hours) AS Total_Hours
+FROM WORKS_ON
+GROUP BY Pno;
+

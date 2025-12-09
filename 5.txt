@@ -1,0 +1,23 @@
+[quesiton number 3 and 5 have same table creation and insertion]
+
+SELECT DISTINCT E.Ename 
+FROM EMPLOYEE E, CERTIFIED C, AIRCRAFT A
+WHERE E.Emp_ID = C.Emp_ID 
+AND C.Aircraft_ID = A.Aircraft_ID
+AND A.Aircraft_name LIKE '%Boeing%';
+
+SELECT * FROM AIRCRAFT 
+ORDER BY Cruising_range ASC;
+
+SELECT DISTINCT E.Ename
+FROM EMPLOYEE E, CERTIFIED C, AIRCRAFT A
+WHERE E.Emp_ID = C.Emp_ID 
+AND C.Aircraft_ID = A.Aircraft_ID
+AND A.Cruising_range > 3000
+AND E.Emp_ID NOT IN (
+    SELECT C2.Emp_ID
+    FROM CERTIFIED C2, AIRCRAFT A2
+    WHERE C2.Aircraft_ID = A2.Aircraft_ID
+    AND A2.Aircraft_name LIKE '%Boeing%'
+);
+

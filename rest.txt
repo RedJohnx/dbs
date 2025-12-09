@@ -1,0 +1,55 @@
+[restaurant]
+db.restaurant.insertMany([
+  {
+    "name": "Truffles",
+    "address": { "building": "12", "street": "St Marks", "area": "Bangalore", "pincode": 560001 },
+    "id": 101,
+    "cuisine": "Italian",
+    "landmarks": "Bishop Cotton",
+    "online_delivery": "yes",
+    "famous_for": "Burgers"
+  },
+  {
+    "name": "Pasta Street",
+    "address": { "building": "5", "street": "Cunningham", "area": "Bangalore", "pincode": 560052 },
+    "id": 102,
+    "cuisine": "Italian",
+    "landmarks": "Sigma Mall",
+    "online_delivery": "no",
+    "famous_for": "Pasta"
+  },
+  {
+    "name": "Punjab Grill",
+    "address": { "building": "10", "street": "Indiranagar", "area": "Bangalore", "pincode": 560038 },
+    "id": 103,
+    "cuisine": "North Indian Thali",
+    "landmarks": "Metro Station",
+    "online_delivery": "yes",
+    "famous_for": "Butter Chicken"
+  },
+  {
+    "name": "Chulha Chauki",
+    "address": { "building": "22", "street": "JP Nagar", "area": "Bangalore", "pincode": 560078 },
+    "id": 104,
+    "cuisine": "North Indian Thali",
+    "landmarks": "Central Mall",
+    "online_delivery": "no",
+    "famous_for": "Dal Makhani"
+  }
+])
+
+db.restaurant.find(
+  { "address.area": "Bangalore", "cuisine": "Italian" },
+  { "name": 1, "address": 1 }
+)
+
+db.restaurant.find(
+  { "address.area": "Bangalore", "cuisine": "North Indian Thali" },
+  { "name": 1, "address": 1, "landmarks": 1 }
+)
+
+db.restaurant.find(
+  { "address.area": "Bangalore" },
+  { "name": 1, "address": 1, "famous_for": 1 }
+)
+

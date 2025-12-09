@@ -1,0 +1,61 @@
+-- 1. Create AIRCRAFT
+CREATE TABLE AIRCRAFT (
+    Aircraft_ID INT,
+    Aircraft_name VARCHAR(20),
+    Cruising_range INT,
+    PRIMARY KEY (Aircraft_ID)
+);
+
+-- 2. Create EMPLOYEE
+CREATE TABLE EMPLOYEE (
+    Emp_ID INT,
+    Ename VARCHAR(20),
+    Salary INT,
+    PRIMARY KEY (Emp_ID)
+);
+
+-- 3. Create CERTIFIED (The link table)
+CREATE TABLE CERTIFIED (
+    Emp_ID INT,
+    Aircraft_ID INT,
+    FOREIGN KEY (Emp_ID) REFERENCES EMPLOYEE(Emp_ID),
+    FOREIGN KEY (Aircraft_ID) REFERENCES AIRCRAFT(Aircraft_ID)
+);
+-- Insert Aircrafts
+INSERT INTO AIRCRAFT VALUES (1, 'Boeing 747', 6000);
+INSERT INTO AIRCRAFT VALUES (2, 'Learjet', 2000);
+INSERT INTO AIRCRAFT VALUES (3, 'Airbus A380', 7000);
+
+-- Insert Employees (Pilots)
+INSERT INTO EMPLOYEE VALUES (101, 'Captain Jack', 90000);
+INSERT INTO EMPLOYEE VALUES (102, 'Pilot Sam', 40000);
+INSERT INTO EMPLOYEE VALUES (103, 'Pilot Sarah', 85000);
+INSERT INTO EMPLOYEE VALUES (104, 'Newbie Tom', 30000);
+INSERT INTO EMPLOYEE VALUES (105, 'Ground Staff', 25000);
+
+-- Insert Certified (Who can fly what?)
+-- Jack (Rich) flies Boeing
+INSERT INTO CERTIFIED VALUES (101, 1);
+-- Sarah (Rich) flies Boeing
+INSERT INTO CERTIFIED VALUES (103, 1);
+-- Sam (Poor) flies Learjet
+INSERT INTO CERTIFIED VALUES (102, 2);
+-- Tom (Poor) flies Learjet
+INSERT INTO CERTIFIED VALUES (104, 2);
+
+SELECT Emp_ID 
+FROM EMPLOYEE 
+WHERE Salary = (SELECT MAX(Salary) FROM EMPLOYEE);
+
+SELECT DISTINCT A.Aircraft_name
+FROM AIRCRAFT A
+WHERE A.Aircraft_ID NOT IN (
+    SELECT C.Aircraft_ID
+    FROM CERTIFIED C, EMPLOYEE E
+    WHERE C.Emp_ID = E.Emp_ID
+    AND E.Salary <= 50000
+);
+
+SELECT Ename 
+FROM EMPLOYEE 
+WHERE Emp_ID NOT IN (SELECT Emp_ID FROM CERTIFIED);

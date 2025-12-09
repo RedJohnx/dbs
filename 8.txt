@@ -1,0 +1,84 @@
+-- 1. Create PLAYER
+CREATE TABLE PLAYER (
+    PId INT,
+    Lname VARCHAR(20),
+    Fname VARCHAR(20),
+    Country VARCHAR(20),
+    Yborn INT,
+    Bplace VARCHAR(20),
+    PRIMARY KEY (PId)
+);
+
+-- 2. Create MATCHES (renamed from MATCH to avoid keyword error)
+CREATE TABLE MATCHES (
+    MatchId INT,
+    Team1 VARCHAR(20),
+    Team2 VARCHAR(20),
+    Ground VARCHAR(20),
+    Date DATE,
+    Winner VARCHAR(20),
+    PRIMARY KEY (MatchId)
+);
+
+-- 3. Create BATTING (Composite Key: MatchId + PId)
+CREATE TABLE BATTING (
+    MatchId INT,
+    PId INT,
+    Nruns INT,
+    Fours INT,
+    Sixes INT,
+    PRIMARY KEY (MatchId, PId),
+    FOREIGN KEY (MatchId) REFERENCES MATCHES(MatchId),
+    FOREIGN KEY (PId) REFERENCES PLAYER(PId)
+);
+
+-- 4. Create BOWLING (Composite Key: MatchId + PId)
+CREATE TABLE BOWLING (
+    MatchId INT,
+    PId INT,
+    Novers INT,
+    Maidens INT,
+    Nruns INT,
+    Nwickets INT,
+    PRIMARY KEY (MatchId, PId),
+    FOREIGN KEY (MatchId) REFERENCES MATCHES(MatchId),
+    FOREIGN KEY (PId) REFERENCES PLAYER(PId)
+);
+
+
+-- Insert Players
+INSERT INTO PLAYER VALUES (1, 'Dhoni', 'MS', 'India', 1981, 'Ranchi');
+INSERT INTO PLAYER VALUES (2, 'Kohli', 'Virat', 'India', 1988, 'Delhi');
+INSERT INTO PLAYER VALUES (3, 'Smith', 'Steve', 'Australia', 1989, 'Sydney');
+INSERT INTO PLAYER VALUES (4, 'Warner', 'David', 'Australia', 1986, 'Sydney');
+
+-- Insert Matches
+INSERT INTO MATCHES VALUES (2689, 'Australia', 'India', 'Melbourne', '2023-01-01', 'India');
+INSERT INTO MATCHES VALUES (2690, 'India', 'England', 'Lords', '2023-02-01', 'India');
+INSERT INTO MATCHES VALUES (2691, 'Australia', 'England', 'Sydney', '2023-03-01', 'Australia');
+
+-- Insert Batting
+-- Dhoni (PId 1) batted in Match 2690
+INSERT INTO BATTING VALUES (2690, 1, 50, 4, 2);
+-- Kohli (PId 2) batted in Match 2689
+INSERT INTO BATTING VALUES (2689, 2, 82, 6, 3);
+-- Smith (PId 3) batted in Match 2689
+INSERT INTO BATTING VALUES (2689, 3, 40, 2, 0);
+
+SELECT Ground 
+FROM MATCHES 
+WHERE Team1 = 'Australia' 
+ORDER BY Ground;
+
+
+
+SELECT M.* FROM MATCHES M, BATTING B, PLAYER P
+WHERE M.MatchId = B.MatchId 
+AND B.PId = P.PId
+AND P.Lname = 'Dhoni';
+
+SELECT P.Fname, P.Lname 
+FROM PLAYER P, BATTING B
+WHERE P.PId = B.PId 
+AND B.MatchId = 2689;
+

@@ -1,0 +1,66 @@
+-- 1. Create DEPARTMENT
+CREATE TABLE DEPARTMENT (
+    Dname VARCHAR(20),
+    Dnumber INT,
+    MgrSSN INT,
+    MgrStartDate DATE,
+    PRIMARY KEY (Dnumber)
+);
+
+-- 2. Create EMPLOYEE
+CREATE TABLE EMPLOYEE (
+    Fname VARCHAR(15),
+    Lname VARCHAR(15),
+    SSN INT,
+    Addrs VARCHAR(50),
+    Sex CHAR(1),
+    Salary INT,
+    SuperSSN INT,
+    Dno INT,
+    PRIMARY KEY (SSN),
+    FOREIGN KEY (Dno) REFERENCES DEPARTMENT(Dnumber)
+);
+
+-- 3. Link Dept Manager
+ALTER TABLE DEPARTMENT ADD FOREIGN KEY (MgrSSN) REFERENCES EMPLOYEE(SSN);
+
+-- 4. Create DEPENDENT (Weak Entity - Key includes ESSN)
+CREATE TABLE DEPENDENT (
+    Dname VARCHAR(20),
+    ESSN INT,
+    PRIMARY KEY (Dname, ESSN),
+    FOREIGN KEY (ESSN) REFERENCES EMPLOYEE(SSN)
+);
+
+-- Insert Departments
+INSERT INTO DEPARTMENT VALUES ('Research', 5, NULL, '2020-01-01');
+INSERT INTO DEPARTMENT VALUES ('Biotech', 1, NULL, '2020-01-01'); -- Contains 'tech'
+
+-- Insert Employees
+INSERT INTO EMPLOYEE VALUES ('John', 'Smith', 1, 'TX', 'M', 60000, NULL, 5);
+INSERT INTO EMPLOYEE VALUES ('Franklin', 'Wong', 2, 'TX', 'M', 40000, 1, 5);
+INSERT INTO EMPLOYEE VALUES ('Alice', 'Wonder', 3, 'NY', 'F', 50000, 1, 1); -- Works in Biotech
+
+-- Update Managers
+UPDATE DEPARTMENT SET MgrSSN = 1 WHERE Dnumber = 5;
+UPDATE DEPARTMENT SET MgrSSN = 3 WHERE Dnumber = 1; -- Alice manages Biotech
+
+-- Insert Dependents
+-- John (SSN 1) has a dependent
+INSERT INTO DEPENDENT VALUES ('Little John', 1);
+-- Alice (SSN 3) has a dependent
+INSERT INTO DEPENDENT VALUES ('Alice Jr', 3);
+
+SELECT D.Dname, AVG(E.Salary) AS Avg_Salary
+FROM DEPARTMENT D, EMPLOYEE E
+WHERE D.Dnumber = E.Dno
+GROUP BY D.Dname;
+
+SELECT E.Fname, E.Lname
+FROM EMPLOYEE E
+WHERE E.SSN IN (SELECT MgrSSN FROM DEPARTMENT) 
+AND E.SSN IN (SELECT ESSN FROM DEPENDENT);
+
+SELECT * FROM DEPARTMENT 
+WHERE Dname LIKE '%tech%';
+
