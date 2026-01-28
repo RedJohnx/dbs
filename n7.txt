@@ -1,0 +1,872 @@
+(base) redjohn@KamalKarteek:/mnt/c/Users/kamal/Desktop/RIT/fsd/SEE$ curl -k https://algo-omega-dun.vercel.app/7.txt  
+CREATE TABLE PERSON (
+    driver_id INT PRIMARY KEY,
+    name VARCHAR(30),
+    address VARCHAR(50)
+);
+
+CREATE TABLE CAR (
+    Regno VARCHAR(10) PRIMARY KEY,
+    model VARCHAR(20),
+    year INT
+);
+
+CREATE TABLE ACCIDENT (
+    report_number INT PRIMARY KEY,
+    acc_date DATE,
+    location VARCHAR(50)
+);
+
+CREATE TABLE OWNS (
+    driver_id INT,
+    Regno VARCHAR(10),
+    FOREIGN KEY (driver_id) REFERENCES PERSON(driver_id),
+    FOREIGN KEY (Regno) REFERENCES CAR(Regno)
+);
+
+CREATE TABLE PARTICIPATED (
+    driver_id INT,
+    Regno VARCHAR(10),
+    report_number INT,
+    damageamount INT,
+    FOREIGN KEY (driver_id) REFERENCES PERSON(driver_id),
+    FOREIGN KEY (Regno) REFERENCES CAR(Regno),
+    FOREIGN KEY (report_number) REFERENCES ACCIDENT(report_number)
+);
+
+
+INSERT INTO PERSON VALUES
+(1, 'Ravi', 'Bangalore'),
+(2, 'Meena', 'Delhi'),
+(3, 'Arjun', 'Mumbai'),
+(4, 'Kiran', 'Chennai'),
+(5, 'Divya', 'Hyderabad');
+
+INSERT INTO CAR VALUES
+('KA01A1', 'Honda', 2019),
+('KA02B2', 'Suzuki', 2020),
+('KA03C3', 'Hyundai', 2018),
+('KA04D4', 'Toyota', 2021),
+('KA05E5', 'Ford', 2017);
+
+INSERT INTO ACCIDENT VALUES
+(501, '2024-01-01', 'MG Road'),
+(502, '2024-02-10', 'BTM'),
+(503, '2024-03-15', 'Indiranagar'),
+(504, '2024-04-05', 'HSR'),
+(505, '2024-05-12', 'Koramangala');
+
+INSERT INTO OWNS VALUES
+(1, 'KA01A1'),
+(2, 'KA02B2'),
+(3, 'KA03C3'),
+(3, 'KA04D4'),
+(4, 'KA05E5');
+
+INSERT INTO PARTICIPATED VALUES
+(1, 'KA01A1', 501, 20000),
+(2, 'KA02B2', 502, 15000),
+(3, 'KA03C3', 503, 50000),
+(3, 'KA04D4', 504, 30000),
+(4, 'KA05E5', 505, 10000);
+
+
+SELECT DISTINCT Regno
+FROM PARTICIPATED;
+
+
+SELECT C.Regno, C.model
+FROM CAR C
+JOIN PARTICIPATED P ON C.Regno = P.Regno
+WHERE P.damageamount = (SELECT MAX(damageamount) FROM PARTICIPATED);
+
+
+SELECT O.driver_id, COUNT(O.Regno) AS TotalCars
+FROM OWNS O
+GROUP BY O.driver_id;
+
+______________________________________________________________________________________________
+
+
+use MovieDB
+
+db.movies.insertMany([
+{
+ actor_name: "John",
+ actor_id: 1,
+ actor_birthdate: "1990-05-10",
+ director_name: "Ram",
+ director_id: 101,
+ director_birthdate: "1975-07-20",
+ film_title: "Action King",
+ year_of_production: 2018,
+ type: "Thriller"
+},
+{
+ actor_name: "John",
+ actor_id: 1,
+ actor_birthdate: "1990-05-10",
+ director_name: "Karan",
+ director_id: 102,
+ director_birthdate: "1980-01-10",
+ film_title: "Laugh Out",
+ year_of_production: 2018,
+ type: "Comedy"
+},
+{
+ actor_name: "Elly",
+ actor_id: 2,
+ actor_birthdate: "1992-09-15",
+ director_name: "Ram",
+ director_id: 101,
+ director_birthdate: "1975-07-20",
+ film_title: "Sky Dreams",
+ year_of_production: 2012,
+ type: "Romantic"
+},
+{
+ actor_name: "John",
+ actor_id: 1,
+ actor_birthdate: "1990-05-10",
+ director_name: "Ram",
+ director_id: 101,
+ director_birthdate: "1975-07-20",
+ film_title: "Sky Dreams",
+ year_of_production: 2012,
+ type: "Romantic"
+},
+{
+ actor_name: "Elly",
+ actor_id: 2,
+ actor_birthdate: "1992-09-15",
+ director_name: "Karan",
+ director_id: 102,
+ director_birthdate: "1980-01-10",
+ film_title: "Crazy Town",
+ year_of_production: 2018,
+ type: "Action"
+},
+{
+ actor_name: "Ram",
+ actor_id: 3,
+ actor_birthdate: "1985-02-05",
+ director_name: "Sony",
+ director_id: 103,
+ director_birthdate: "1978-03-09",
+ film_title: "Hero Man",
+ year_of_production: 2016,
+ type: "Thriller"
+},
+{
+ actor_name: "Ram",
+ actor_id: 3,
+ actor_birthdate: "1985-02-05",
+ director_name: "Karan",
+ director_id: 102,
+ director_birthdate: "1980-01-10",
+ film_title: "Love Shot",
+ year_of_production: 2014,
+ type: "Romantic"
+},
+{
+ actor_name: "John",
+ actor_id: 1,
+ actor_birthdate: "1990-05-10",
+ director_name: "Sudeep",
+ director_id: 104,
+ director_birthdate: "1973-12-01",
+ film_title: "Big Boss",
+ year_of_production: 2012,
+ type: "Drama"
+},
+{
+ actor_name: "Elly",
+ actor_id: 2,
+ actor_birthdate: "1992-09-15",
+ director_name: "Sony",
+ director_id: 103,
+ director_birthdate: "1978-03-09",
+ film_title: "Queen Star",
+ year_of_production: 2012,
+ type: "Drama"
+},
+{
+ actor_name: "Ram",
+ actor_id: 3,
+ actor_birthdate: "1985-02-05",
+ director_name: "Karan",
+ director_id: 102,
+ director_birthdate: "1980-01-10",
+ film_title: "Tiger Attack",
+ year_of_production: 2017,
+ type: "Action"
+}
+]);
+
+db.movies.find(
+  { actor_name: "John", year_of_production: 2018 },
+  { film_title: 1, _id: 0 }
+);
+
+
+
+db.movies.find(
+  { director_name: "Ram" },
+  { actor_name: 1, type: 1, _id: 0 }
+);
+
+(base) redjohn@KamalKarteek:/mnt/c/Users/kamal/Desktop/RIT/fsd/SEE$ curl -k https://algo-omega-dun.vercel.app/8.txt  
+CREATE TABLE PLAYER (
+    Pid INT PRIMARY KEY,
+    Lname VARCHAR(20),
+    Fname VARCHAR(20),
+    Country VARCHAR(20),
+    Yborn INT,
+    Bplace VARCHAR(30)
+);
+
+CREATE TABLE MATCHES (
+    MatchId INT PRIMARY KEY,
+    Team1 VARCHAR(20),
+    Team2 VARCHAR(20),
+    Ground VARCHAR(30),
+    Date DATE,
+    Winner VARCHAR(20)
+);
+
+CREATE TABLE BATTING (
+    MatchId INT,
+    Pid INT,
+    Nruns INT,
+    Fours INT,
+    Sixes INT,
+    FOREIGN KEY (MatchId) REFERENCES MATCHES(MatchId),
+    FOREIGN KEY (Pid) REFERENCES PLAYER(Pid)
+);
+
+CREATE TABLE BOWLING (
+    MatchId INT,
+    Pid INT,
+    Novers INT,
+    Maidens INT,
+    Nruns INT,
+    Nwickets INT,
+    FOREIGN KEY (MatchId) REFERENCES MATCHES(MatchId),
+    FOREIGN KEY (Pid) REFERENCES PLAYER(Pid)
+);
+
+INSERT INTO PLAYER VALUES
+(1, 'Kohli', 'Virat', 'India', 1988, 'Delhi'),
+(2, 'Smith', 'Steve', 'Australia', 1989, 'Sydney'),
+(3, 'Warner', 'David', 'Australia', 1986, 'Sydney'),
+(4, 'Dhoni', 'MS', 'India', 1981, 'Ranchi'),
+(5, 'Root', 'Joe', 'England', 1991, 'Sheffield');
+
+INSERT INTO MATCHES VALUES
+(2689, 'India', 'Australia', 'MCG', '2023-01-10', 'India'),
+(2690, 'Australia', 'England', 'SCG', '2023-02-12', 'Australia'),
+(2691, 'England', 'India', 'Lords', '2023-03-05', 'England'),
+(2692, 'India', 'Australia', 'Wankhede', '2023-04-09', 'Australia'),
+(2693, 'Australia', 'India', 'Gabba', '2023-05-15', 'Australia');
+
+INSERT INTO BATTING VALUES
+(2689, 1, 85, 8, 2),
+(2689, 4, 45, 3, 1),
+(2690, 2, 110, 10, 3),
+(2692, 3, 70, 6, 1),
+(2689, 3, 30, 2, 1);
+
+INSERT INTO BOWLING VALUES
+(2689, 2, 10, 1, 55, 2),
+(2690, 5, 9, 0, 60, 1),
+(2692, 1, 8, 0, 45, 1),
+(2689, 3, 7, 0, 35, 1),
+(2693, 5, 10, 1, 50, 3);
+
+
+SELECT DISTINCT Ground
+FROM MATCHES
+WHERE Team1 = 'Australia'
+ORDER BY Ground ASC;
+
+
+SELECT M.*
+FROM MATCHES M
+JOIN BATTING B ON M.MatchId = B.MatchId
+JOIN PLAYER P ON B.Pid = P.Pid
+WHERE P.Lname = 'Dhoni';
+
+
+
+SELECT P.Fname, P.Lname
+FROM PLAYER P
+JOIN BATTING B ON P.Pid = B.Pid
+WHERE B.MatchId = 2689;
+
+______________________________________________________________________________________________
+
+use MovieDB
+
+db.movies.insertMany([
+{
+ actor_name: "John",
+ actor_id: 1,
+ actor_birthdate: "1990-05-10",
+ director_name: "Ram",
+ director_id: 101,
+ director_birthdate: "1975-07-20",
+ film_title: "Action King",
+ year_of_production: 2018,
+ type: "Thriller"
+},
+{
+ actor_name: "John",
+ actor_id: 1,
+ actor_birthdate: "1990-05-10",
+ director_name: "Karan",
+ director_id: 102,
+ director_birthdate: "1980-01-10",
+ film_title: "Laugh Out",
+ year_of_production: 2018,
+ type: "Comedy"
+},
+{
+ actor_name: "Elly",
+ actor_id: 2,
+ actor_birthdate: "1992-09-15",
+ director_name: "Ram",
+ director_id: 101,
+ director_birthdate: "1975-07-20",
+ film_title: "Sky Dreams",
+ year_of_production: 2012,
+ type: "Romantic"
+},
+{
+ actor_name: "John",
+ actor_id: 1,
+ actor_birthdate: "1990-05-10",
+ director_name: "Ram",
+ director_id: 101,
+ director_birthdate: "1975-07-20",
+ film_title: "Sky Dreams",
+ year_of_production: 2012,
+ type: "Romantic"
+},
+{
+ actor_name: "Elly",
+ actor_id: 2,
+ actor_birthdate: "1992-09-15",
+ director_name: "Karan",
+ director_id: 102,
+ director_birthdate: "1980-01-10",
+ film_title: "Crazy Town",
+ year_of_production: 2018,
+ type: "Action"
+},
+{
+ actor_name: "Ram",
+ actor_id: 3,
+ actor_birthdate: "1985-02-05",
+ director_name: "Sony",
+ director_id: 103,
+ director_birthdate: "1978-03-09",
+ film_title: "Hero Man",
+ year_of_production: 2016,
+ type: "Thriller"
+},
+{
+ actor_name: "Ram",
+ actor_id: 3,
+ actor_birthdate: "1985-02-05",
+ director_name: "Karan",
+ director_id: 102,
+ director_birthdate: "1980-01-10",
+ film_title: "Love Shot",
+ year_of_production: 2014,
+ type: "Romantic"
+},
+{
+ actor_name: "John",
+ actor_id: 1,
+ actor_birthdate: "1990-05-10",
+ director_name: "Sudeep",
+ director_id: 104,
+ director_birthdate: "1973-12-01",
+ film_title: "Big Boss",
+ year_of_production: 2012,
+ type: "Drama"
+},
+{
+ actor_name: "Elly",
+ actor_id: 2,
+ actor_birthdate: "1992-09-15",
+ director_name: "Sony",
+ director_id: 103,
+ director_birthdate: "1978-03-09",
+ film_title: "Queen Star",
+ year_of_production: 2012,
+ type: "Drama"
+},
+{
+ actor_name: "Ram",
+ actor_id: 3,
+ actor_birthdate: "1985-02-05",
+ director_name: "Karan",
+ director_id: 102,
+ director_birthdate: "1980-01-10",
+ film_title: "Tiger Attack",
+ year_of_production: 2017,
+ type: "Action"
+}
+]);
+
+
+db.movies.find(
+  { actor_name: { $in: ["John", "Elly"] }, year_of_production: 2012 },
+  { film_title: 1, actor_name: 1, _id: 0 }
+);
+
+
+db.movies.find(
+  { actor_name: "Ram" },
+  { film_title: 1, type: 1, _id: 0 }
+).sort({ film_title: 1 });
+
+(base) redjohn@KamalKarteek:/mnt/c/Users/kamal/Desktop/RIT/fsd/SEE$ curl -k https://algo-omega-dun.vercel.app/9.txt  
+CREATE TABLE CUSTOMER (
+    custno INT PRIMARY KEY,
+    cname VARCHAR(30),
+    city VARCHAR(30)
+);
+
+CREATE TABLE ORDERS (
+    orderno INT PRIMARY KEY,
+    odate DATE,
+    custno INT,
+    ordAmt INT,
+    FOREIGN KEY (custno) REFERENCES CUSTOMER(custno)
+);
+
+CREATE TABLE ITEM (
+    itemno INT PRIMARY KEY,
+    unitprice INT
+);
+
+CREATE TABLE ORDER_ITEM (
+    orderno INT,
+    itemno INT,
+    qty INT,
+    FOREIGN KEY (orderno) REFERENCES ORDERS(orderno),
+    FOREIGN KEY (itemno) REFERENCES ITEM(itemno)
+);
+
+CREATE TABLE SHIPMENT (
+    orderno INT,
+    shipdate DATE,
+    FOREIGN KEY (orderno) REFERENCES ORDERS(orderno)
+);
+
+INSERT INTO CUSTOMER VALUES
+(1,'Ravi','Bangalore'),
+(2,'Meena','Mumbai'),
+(3,'Arjun','Bangalore'),
+(4,'Kiran','Delhi'),
+(5,'Divya','Chennai');
+
+INSERT INTO ORDERS VALUES
+(101,'2025-01-01',1, 5000),
+(102,'2025-01-02',1, 2500),
+(103,'2025-01-02',2, 3000),
+(104,'2025-01-03',3, 4500),
+(105,'2025-01-04',3, 6000);
+
+INSERT INTO ITEM VALUES
+(10,100),
+(11,150),
+(12,200),
+(13,250),
+(14,300);
+
+INSERT INTO ORDER_ITEM VALUES
+(101,10,2),
+(102,11,1),
+(103,10,3),
+(104,12,4),
+(105,13,5);
+
+INSERT INTO SHIPMENT VALUES
+(101,'2025-01-05'),
+(102,'2025-01-06'),
+(103,'2025-01-07'),
+(104,'2025-01-08'),
+(105,'2025-01-09');
+
+
+SELECT C.cname
+FROM CUSTOMER C
+JOIN ORDERS O ON C.custno = O.custno
+GROUP BY C.cname
+HAVING COUNT(O.orderno) > 2;
+
+SELECT odate, SUM(ordAmt) AS TotalAmount
+FROM ORDERS
+GROUP BY odate;
+
+SELECT C.*
+FROM CUSTOMER C
+JOIN ORDERS O ON C.custno = O.custno
+WHERE O.ordAmt = (SELECT MAX(ordAmt) FROM ORDERS);
+
+______________________________________________________________________________________________
+
+use MovieDB
+
+db.movies.insertMany([
+{
+ actor_name: "John",
+ actor_id: 1,
+ actor_birthdate: "1990-05-10",
+ director_name: "Ram",
+ director_id: 101,
+ director_birthdate: "1975-07-20",
+ film_title: "Action King",
+ year_of_production: 2018,
+ type: "Thriller"
+},
+{
+ actor_name: "John",
+ actor_id: 1,
+ actor_birthdate: "1990-05-10",
+ director_name: "Karan",
+ director_id: 102,
+ director_birthdate: "1980-01-10",
+ film_title: "Laugh Out",
+ year_of_production: 2018,
+ type: "Comedy"
+},
+{
+ actor_name: "Elly",
+ actor_id: 2,
+ actor_birthdate: "1992-09-15",
+ director_name: "Ram",
+ director_id: 101,
+ director_birthdate: "1975-07-20",
+ film_title: "Sky Dreams",
+ year_of_production: 2012,
+ type: "Romantic"
+},
+{
+ actor_name: "John",
+ actor_id: 1,
+ actor_birthdate: "1990-05-10",
+ director_name: "Ram",
+ director_id: 101,
+ director_birthdate: "1975-07-20",
+ film_title: "Sky Dreams",
+ year_of_production: 2012,
+ type: "Romantic"
+},
+{
+ actor_name: "Elly",
+ actor_id: 2,
+ actor_birthdate: "1992-09-15",
+ director_name: "Karan",
+ director_id: 102,
+ director_birthdate: "1980-01-10",
+ film_title: "Crazy Town",
+ year_of_production: 2018,
+ type: "Action"
+},
+{
+ actor_name: "Ram",
+ actor_id: 3,
+ actor_birthdate: "1985-02-05",
+ director_name: "Sony",
+ director_id: 103,
+ director_birthdate: "1978-03-09",
+ film_title: "Hero Man",
+ year_of_production: 2016,
+ type: "Thriller"
+},
+{
+ actor_name: "Ram",
+ actor_id: 3,
+ actor_birthdate: "1985-02-05",
+ director_name: "Karan",
+ director_id: 102,
+ director_birthdate: "1980-01-10",
+ film_title: "Love Shot",
+ year_of_production: 2014,
+ type: "Romantic"
+},
+{
+ actor_name: "John",
+ actor_id: 1,
+ actor_birthdate: "1990-05-10",
+ director_name: "Sudeep",
+ director_id: 104,
+ director_birthdate: "1973-12-01",
+ film_title: "Big Boss",
+ year_of_production: 2012,
+ type: "Drama"
+},
+{
+ actor_name: "Elly",
+ actor_id: 2,
+ actor_birthdate: "1992-09-15",
+ director_name: "Sony",
+ director_id: 103,
+ director_birthdate: "1978-03-09",
+ film_title: "Queen Star",
+ year_of_production: 2012,
+ type: "Drama"
+},
+{
+ actor_name: "Ram",
+ actor_id: 3,
+ actor_birthdate: "1985-02-05",
+ director_name: "Karan",
+ director_id: 102,
+ director_birthdate: "1980-01-10",
+ film_title: "Tiger Attack",
+ year_of_production: 2017,
+ type: "Action"
+}
+]);
+
+
+db.movies.find(
+  { actor_name: "John", year_of_production: 2018 },
+  { film_title: 1, _id: 0 }
+);
+
+
+db.movies.find(
+  { director_name: "Ram" },
+  { actor_name: 1, type: 1, _id: 0 }
+);
+
+
+
+(base) redjohn@KamalKarteek:/mnt/c/Users/kamal/Desktop/RIT/fsd/SEE$ curl -k https://algo-omega-dun.vercel.app/10.txt 
+CREATE TABLE CUSTOMER (
+    custno INT PRIMARY KEY,
+    cname VARCHAR(30),
+    city VARCHAR(30)
+);
+
+CREATE TABLE ORDERS (
+    orderno INT PRIMARY KEY,
+    odate DATE,
+    custno INT,
+    ordAmt INT,
+    FOREIGN KEY (custno) REFERENCES CUSTOMER(custno)
+);
+
+CREATE TABLE ITEM (
+    itemno INT PRIMARY KEY,
+    unitprice INT
+);
+
+CREATE TABLE ORDER_ITEM (
+    orderno INT,
+    itemno INT,
+    qty INT,
+    FOREIGN KEY (orderno) REFERENCES ORDERS(orderno),
+    FOREIGN KEY (itemno) REFERENCES ITEM(itemno)
+);
+
+CREATE TABLE SHIPMENT (
+    orderno INT,
+    shipdate DATE,
+    FOREIGN KEY (orderno) REFERENCES ORDERS(orderno)
+);
+
+INSERT INTO CUSTOMER VALUES
+(1,'Ravi','Bangalore'),
+(2,'Meena','Mumbai'),
+(3,'Arjun','Bangalore'),
+(4,'Kiran','Delhi'),
+(5,'Divya','Chennai');
+
+INSERT INTO ORDERS VALUES
+(101,'2025-01-01',1, 5000),
+(102,'2025-01-02',1, 2500),
+(103,'2025-01-02',2, 3000),
+(104,'2025-01-03',3, 4500),
+(105,'2025-01-04',3, 6000);
+
+INSERT INTO ITEM VALUES
+(10,100),
+(11,150),
+(12,200),
+(13,250),
+(14,300);
+
+INSERT INTO ORDER_ITEM VALUES
+(101,10,2),
+(102,11,1),
+(103,10,3),
+(104,12,4),
+(105,13,5);
+
+INSERT INTO SHIPMENT VALUES
+(101,'2025-01-05'),
+(102,'2025-01-06'),
+(103,'2025-01-07'),
+(104,'2025-01-08'),
+(105,'2025-01-09');
+
+SELECT C.cname, COUNT(O.orderno) AS NoOfOrders
+FROM CUSTOMER C
+JOIN ORDERS O ON C.custno = O.custno
+WHERE C.city = 'Bangalore'
+GROUP BY C.cname;
+
+
+SELECT DISTINCT C.cname
+FROM CUSTOMER C
+JOIN ORDERS O ON C.custno = O.custno
+JOIN ORDER_ITEM OI ON O.orderno = OI.orderno
+GROUP BY C.cname
+HAVING SUM(OI.qty) >= 3;
+
+
+SELECT cname
+FROM CUSTOMER
+WHERE custno NOT IN (
+    SELECT O.custno
+    FROM ORDERS O
+    JOIN ORDER_ITEM OI ON O.orderno = OI.orderno
+    WHERE OI.itemno = 10
+);
+
+______________________________________________________________________________________________
+
+use MovieDB
+
+db.movies.insertMany([
+{
+ actor_name: "John",
+ actor_id: 1,
+ actor_birthdate: "1990-05-10",
+ director_name: "Ram",
+ director_id: 101,
+ director_birthdate: "1975-07-20",
+ film_title: "Action King",
+ year_of_production: 2018,
+ type: "Thriller"
+},
+{
+ actor_name: "John",
+ actor_id: 1,
+ actor_birthdate: "1990-05-10",
+ director_name: "Karan",
+ director_id: 102,
+ director_birthdate: "1980-01-10",
+ film_title: "Laugh Out",
+ year_of_production: 2018,
+ type: "Comedy"
+},
+{
+ actor_name: "Elly",
+ actor_id: 2,
+ actor_birthdate: "1992-09-15",
+ director_name: "Ram",
+ director_id: 101,
+ director_birthdate: "1975-07-20",
+ film_title: "Sky Dreams",
+ year_of_production: 2012,
+ type: "Romantic"
+},
+{
+ actor_name: "John",
+ actor_id: 1,
+ actor_birthdate: "1990-05-10",
+ director_name: "Ram",
+ director_id: 101,
+ director_birthdate: "1975-07-20",
+ film_title: "Sky Dreams",
+ year_of_production: 2012,
+ type: "Romantic"
+},
+{
+ actor_name: "Elly",
+ actor_id: 2,
+ actor_birthdate: "1992-09-15",
+ director_name: "Karan",
+ director_id: 102,
+ director_birthdate: "1980-01-10",
+ film_title: "Crazy Town",
+ year_of_production: 2018,
+ type: "Action"
+},
+{
+ actor_name: "Ram",
+ actor_id: 3,
+ actor_birthdate: "1985-02-05",
+ director_name: "Sony",
+ director_id: 103,
+ director_birthdate: "1978-03-09",
+ film_title: "Hero Man",
+ year_of_production: 2016,
+ type: "Thriller"
+},
+{
+ actor_name: "Ram",
+ actor_id: 3,
+ actor_birthdate: "1985-02-05",
+ director_name: "Karan",
+ director_id: 102,
+ director_birthdate: "1980-01-10",
+ film_title: "Love Shot",
+ year_of_production: 2014,
+ type: "Romantic"
+},
+{
+ actor_name: "John",
+ actor_id: 1,
+ actor_birthdate: "1990-05-10",
+ director_name: "Sudeep",
+ director_id: 104,
+ director_birthdate: "1973-12-01",
+ film_title: "Big Boss",
+ year_of_production: 2012,
+ type: "Drama"
+},
+{
+ actor_name: "Elly",
+ actor_id: 2,
+ actor_birthdate: "1992-09-15",
+ director_name: "Sony",
+ director_id: 103,
+ director_birthdate: "1978-03-09",
+ film_title: "Queen Star",
+ year_of_production: 2012,
+ type: "Drama"
+},
+{
+ actor_name: "Ram",
+ actor_id: 3,
+ actor_birthdate: "1985-02-05",
+ director_name: "Karan",
+ director_id: 102,
+ director_birthdate: "1980-01-10",
+ film_title: "Tiger Attack",
+ year_of_production: 2017,
+ type: "Action"
+}
+]);
+
+
+db.movies.find(
+  { actor_name: { $in: ["John", "Elly"] }, year_of_production: 2012 },
+  { film_title: 1, actor_name: 1, _id: 0 }
+);
+
+
+db.movies.find(
+  { actor_name: "Ram" },
+  { film_title: 1, type: 1, _id: 0 }
+).sort({ film_title: 1 });
+

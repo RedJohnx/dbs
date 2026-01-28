@@ -1,0 +1,160 @@
+CREATE TABLE EMPLOYEE (
+    Fname VARCHAR(20),
+    Lname VARCHAR(20),
+    SSN VARCHAR(9) PRIMARY KEY,
+    Addrs VARCHAR(50),
+    Sex CHAR(1),
+    Salary INT,
+    SuperSSN VARCHAR(9),
+    Dno INT
+);
+
+CREATE TABLE DEPARTMENT (
+    Dname VARCHAR(30),
+    Dnumber INT PRIMARY KEY,
+    MgrSSN VARCHAR(9),
+    MgrStartDate DATE,
+    FOREIGN KEY (MgrSSN) REFERENCES EMPLOYEE(SSN)
+);
+
+CREATE TABLE DEPENDENT (
+    Dname VARCHAR(20),
+    ESSN VARCHAR(9),
+    FOREIGN KEY (ESSN) REFERENCES EMPLOYEE(SSN)
+);
+
+INSERT INTO EMPLOYEE VALUES
+('Ravi','Kumar','101','Bangalore','M',60000,NULL,1),
+('Meena','Sharma','102','Mysore','F',55000,'101',2),
+('Arjun','M','103','Bangalore','M',45000,'101',5),
+('Kiran','P','104','Delhi','M',48000,'102',5),
+('Divya','L','105','Mumbai','F',40000,'102',3);
+
+INSERT INTO DEPARTMENT VALUES
+('Research',1,'101','2020-01-01'),
+('Admin',2,'102','2021-01-10'),
+('HR',3,'105','2019-05-15'),
+('Sales',4,'103','2022-06-05'),
+('Tech-Dev',5,'104','2021-09-20');
+
+INSERT INTO DEPENDENT VALUES
+('Son','101'),
+('Daughter','101'),
+('Father','102'),
+('Mother','104'),
+('Brother','105');
+
+
+
+SELECT D.Dname, AVG(E.Salary) AS AvgSalary
+FROM DEPARTMENT D
+JOIN EMPLOYEE E ON D.Dnumber = E.Dno
+GROUP BY D.Dname;
+
+SELECT DISTINCT E.Fname, E.Lname
+FROM EMPLOYEE E
+JOIN DEPARTMENT D ON E.Ssn = D.Mgr_ssn
+JOIN DEPENDENT DE ON E.Ssn = DE.Essn;
+
+
+SELECT *
+FROM DEPARTMENT
+WHERE Dname LIKE '%tech%';
+
+______________________________________________________________________________________________
+
+use TourismDB
+
+db.places.insertMany([
+{
+ id: 1, place: "Mysore Palace", address: { state: "Karnataka" },
+ attractions: "Royal Palace, Light Show",
+ best_time: "Oct - Feb",
+ transport: "Mysore Airport, Mysore Jn Railway",
+ accommodation: "Hotels near Palace",
+ food: "Mysore Pak"
+},
+{
+ id: 2, place: "Coorg", address: { state: "Karnataka" },
+ attractions: "Coffee Estates, Waterfalls",
+ best_time: "Sept - March",
+ transport: "Mangalore Airport",
+ accommodation: "Resorts, Homestays",
+ food: "Coorg Pork Curry"
+},
+{
+ id: 3, place: "Hampi", address: { state: "Karnataka" },
+ attractions: "UNESCO Heritage Temples",
+ best_time: "Nov - Feb",
+ transport: "Hubli Airport",
+ accommodation: "Lodges, Homestays",
+ food: "Local Karnataka Meals"
+},
+{
+ id: 4, place: "Wayanad", address: { state: "Kerala" },
+ attractions: "Hill Stations, Wildlife",
+ best_time: "Oct - May",
+ transport: "Calicut Airport",
+ accommodation: "Resorts",
+ food: "Kerala Meals"
+},
+{
+ id: 5, place: "Munnar", address: { state: "Kerala" },
+ attractions: "Tea Gardens, Viewpoints",
+ best_time: "Sept - April",
+ transport: "Cochin Airport",
+ accommodation: "Hill Resorts",
+ food: "Appam & Stew"
+},
+{
+ id: 6, place: "Kochi", address: { state: "Kerala" },
+ attractions: "Beaches, Fort Kochi",
+ best_time: "Aug - Feb",
+ transport: "Kochi Airport",
+ accommodation: "Hotels",
+ food: "Seafood"
+},
+{
+ id: 7, place: "Goa Beach", address: { state: "Goa" },
+ attractions: "Beaches, Nightlife",
+ best_time: "Oct - Jan",
+ transport: "Goa Airport",
+ accommodation: "Beach Resorts",
+ food: "Fish Fry"
+},
+{
+ id: 8, place: "Taj Mahal", address: { state: "Uttar Pradesh" },
+ attractions: "Wonder of the World",
+ best_time: "Nov - Feb",
+ transport: "Agra Airport",
+ accommodation: "Luxury Hotels",
+ food: "Agra Petha"
+},
+{
+ id: 9, place: "Jaipur", address: { state: "Rajasthan" },
+ attractions: "Forts, Hawa Mahal",
+ best_time: "Nov - Feb",
+ transport: "Jaipur Airport",
+ accommodation: "Heritage Hotels",
+ food: "Rajasthani Thali"
+},
+{
+ id: 10, place: "Kodaikanal", address: { state: "Tamil Nadu" },
+ attractions: "Hill Station, Lake",
+ best_time: "June - Sept",
+ transport: "Madurai Airport",
+ accommodation: "Hill Resorts",
+ food: "South Indian Meals"
+}
+]);
+
+db.places.find(
+  { "address.state": "Karnataka" },
+  { place: 1, _id: 0 }
+);
+
+db.places.find(
+  {},
+  { place: 1, address: 1, _id: 0 }
+).sort({ "address.state": 1 });
+

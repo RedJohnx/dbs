@@ -1,0 +1,162 @@
+CREATE TABLE AIRCRAFT (
+    AircraftID INT PRIMARY KEY,
+    Aircraft_name VARCHAR(30),
+    Cruising_range INT
+);
+
+CREATE TABLE EMPLOYEE (
+    EmpID INT PRIMARY KEY,
+    Ename VARCHAR(30),
+    Salary INT
+);
+
+CREATE TABLE CERTIFIED (
+    EmpID INT,
+    AircraftID INT,
+    FOREIGN KEY (EmpID) REFERENCES EMPLOYEE(EmpID),
+    FOREIGN KEY (AircraftID) REFERENCES AIRCRAFT(AircraftID)
+);
+
+INSERT INTO AIRCRAFT VALUES
+(201, 'Boeing 737', 3000),
+(202, 'Airbus A320', 3500),
+(203, 'Fighter F16', 1500),
+(204, 'Jet A500', 2000),
+(205, 'Cargo C777', 5000);
+
+INSERT INTO EMPLOYEE VALUES
+(101, 'Ravi', 75000),
+(102, 'Arjun', 50000),
+(103, 'Meena', 90000),
+(104, 'Kiran', 45000),
+(105, 'Divya', 80000);
+
+INSERT INTO CERTIFIED VALUES
+(101, 201),
+(101, 202),
+(103, 203),
+(105, 201),
+(105, 205);
+
+SELECT DISTINCT E.Ename
+FROM EMPLOYEE E
+JOIN CERTIFIED C ON E.EmpID = C.EmpID
+JOIN AIRCRAFT A ON C.AircraftID = A.AircraftID
+WHERE A.Aircraft_name LIKE '%Boeing%';
+
+SELECT Aircraft_name, Cruising_range
+FROM AIRCRAFT
+ORDER BY Cruising_range ASC;
+
+
+SELECT DISTINCT E.Ename
+FROM EMPLOYEE E
+JOIN CERTIFIED C ON E.EmpID = C.EmpID
+JOIN AIRCRAFT A ON C.AircraftID = A.AircraftID
+WHERE A.Cruising_range > 3000
+AND E.EmpID NOT IN (
+    SELECT EmpID
+    FROM CERTIFIED C2
+    JOIN AIRCRAFT A2 ON C2.AircraftID = A2.AircraftID
+    WHERE A2.Aircraft_name LIKE '%Boeing%'
+);
+______________________________________________________________________________________________
+
+use TourismDB
+
+db.places.insertMany([
+{
+ id: 1, place: "Mysore Palace", address: { state: "Karnataka" },
+ attractions: "Royal Palace, Light Show",
+ best_time: "Oct - Feb",
+ transport: "Mysore Airport, Mysore Jn Railway",
+ accommodation: "Hotels near Palace",
+ food: "Mysore Pak"
+},
+{
+ id: 2, place: "Coorg", address: { state: "Karnataka" },
+ attractions: "Coffee Estates, Waterfalls",
+ best_time: "Sept - March",
+ transport: "Mangalore Airport",
+ accommodation: "Resorts, Homestays",
+ food: "Coorg Pork Curry"
+},
+{
+ id: 3, place: "Hampi", address: { state: "Karnataka" },
+ attractions: "UNESCO Heritage Temples",
+ best_time: "Nov - Feb",
+ transport: "Hubli Airport",
+ accommodation: "Lodges, Homestays",
+ food: "Local Karnataka Meals"
+},
+{
+ id: 4, place: "Wayanad", address: { state: "Kerala" },
+ attractions: "Hill Stations, Wildlife",
+ best_time: "Oct - May",
+ transport: "Calicut Airport",
+ accommodation: "Resorts",
+ food: "Kerala Meals"
+},
+{
+ id: 5, place: "Munnar", address: { state: "Kerala" },
+ attractions: "Tea Gardens, Viewpoints",
+ best_time: "Sept - April",
+ transport: "Cochin Airport",
+ accommodation: "Hill Resorts",
+ food: "Appam & Stew"
+},
+{
+ id: 6, place: "Kochi", address: { state: "Kerala" },
+ attractions: "Beaches, Fort Kochi",
+ best_time: "Aug - Feb",
+ transport: "Kochi Airport",
+ accommodation: "Hotels",
+ food: "Seafood"
+},
+{
+ id: 7, place: "Goa Beach", address: { state: "Goa" },
+ attractions: "Beaches, Nightlife",
+ best_time: "Oct - Jan",
+ transport: "Goa Airport",
+ accommodation: "Beach Resorts",
+ food: "Fish Fry"
+},
+{
+ id: 8, place: "Taj Mahal", address: { state: "Uttar Pradesh" },
+ attractions: "Wonder of the World",
+ best_time: "Nov - Feb",
+ transport: "Agra Airport",
+ accommodation: "Luxury Hotels",
+ food: "Agra Petha"
+},
+{
+ id: 9, place: "Jaipur", address: { state: "Rajasthan" },
+ attractions: "Forts, Hawa Mahal",
+ best_time: "Nov - Feb",
+ transport: "Jaipur Airport",
+ accommodation: "Heritage Hotels",
+ food: "Rajasthani Thali"
+},
+{
+ id: 10, place: "Kodaikanal", address: { state: "Tamil Nadu" },
+ attractions: "Hill Station, Lake",
+ best_time: "June - Sept",
+ transport: "Madurai Airport",
+ accommodation: "Hill Resorts",
+ food: "South Indian Meals"
+}
+]);
+
+
+db.places.find(
+  { "address.state": "Kerala" },
+  { place: 1, attractions: 1, address: 1, _id: 0 }
+);
+
+
+db.places.find(
+  {},
+  { place: 1, address: 1, _id: 0 }
+).sort({ "address.state": 1 });
+
+

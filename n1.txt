@@ -1,0 +1,153 @@
+CREATE TABLE SAILORS (
+    Sid INT PRIMARY KEY,
+    Sname VARCHAR(30),
+    Rating INT,
+    Age INT
+);
+
+CREATE TABLE BOATS (
+    Bid INT PRIMARY KEY,
+    Bname VARCHAR(30),
+    Colour VARCHAR(20)
+);
+
+CREATE TABLE RESERVES (
+    Sid INT,
+    Bid INT,
+    day DATE,
+    PRIMARY KEY (Sid, Bid, day),
+    FOREIGN KEY (Sid) REFERENCES SAILORS(Sid),
+    FOREIGN KEY (Bid) REFERENCES BOATS(Bid)
+);
+
+INSERT INTO SAILORS VALUES
+(101, 'Ravi', 7, 22),
+(102, 'Arjun', 5, 25),
+(103, 'Kiran', 8, 20),
+(104, 'Meena', 6, 23),
+(105, 'Sai', 9, 30);
+
+INSERT INTO BOATS VALUES
+(201, 'Speedster', 'Red'),
+(202, 'WaveRider', 'Blue'),
+(203, 'SeaQueen', 'Green'),
+(204, 'OceanStar', 'Red'),
+(205, 'Sunny', 'Yellow');
+
+INSERT INTO RESERVES VALUES
+(101, 201, '2025-12-01'),
+(102, 202, '2025-12-03'),
+(103, 203, '2025-12-04'),
+(101, 204, '2025-12-05'),
+(104, 202, '2025-12-02');
+
+SELECT DISTINCT Sname
+FROM SAILORS S
+JOIN RESERVES R ON S.Sid = R.Sid;
+
+SELECT DISTINCT R.Sid
+FROM RESERVES R
+JOIN BOATS B ON R.Bid = B.Bid
+WHERE B.Colour = 'Red' OR B.Colour = 'Green';
+
+SELECT Sid
+FROM SAILORS
+WHERE Sid NOT IN (SELECT Sid FROM RESERVES);
+
+______________________________________________________________________________________________
+
+use RestaurantDB
+
+db.restaurants.insertMany([
+{
+    id: 1, name: "Taste of Italy",
+    address: {building: "12", street: "MG Road", area: "Bangalore", pincode: 560001},
+    cuisine: "Italian",
+    nearby: "Brigade Road",
+    online_delivery: "Yes",
+    famous_for: "Pasta Alfredo"
+},
+{
+    id: 2, name: "Delhi Thali House",
+    address: {building: "22", street: "VV Puram", area: "Bangalore", pincode: 560004},
+    cuisine: "North Indian Thali",
+    nearby: "KR Market",
+    online_delivery: "No",
+    famous_for: "Special Thali"
+},
+{
+    id: 3, name: "Pizza King",
+    address: {building: "45", street: "Indiranagar", area: "Bangalore", pincode: 560038},
+    cuisine: "Italian",
+    nearby: "CMH Road",
+    online_delivery: "Yes",
+    famous_for: "Cheese Burst Pizza"
+},
+{
+    id: 4, name: "Punjabi Rasoi",
+    address: {building: "78", street: "HSR Layout", area: "Bangalore", pincode: 560102},
+    cuisine: "North Indian Thali",
+    nearby: "Agara Lake",
+    online_delivery: "Yes",
+    famous_for: "Lassi"
+},
+{
+    id: 5, name: "Namma Oota",
+    address: {building: "56", street: "Rajajinagar", area: "Bangalore", pincode: 560010},
+    cuisine: "South Indian",
+    nearby: "Orion Mall",
+    online_delivery: "Yes",
+    famous_for: "Ragi Mudde"
+},
+{
+    id: 6, name: "Bombay Bite",
+    address: {building: "89", street: "Jayanagar", area: "Bangalore", pincode: 560041},
+    cuisine: "North Indian Thali",
+    nearby: "Jayanagar 4th Block",
+    online_delivery: "No",
+    famous_for: "Chole Bhature"
+},
+{
+    id: 7, name: "La Pasta",
+    address: {building: "15", street: "Koramangala", area: "Bangalore", pincode: 560034},
+    cuisine: "Italian",
+    nearby: "Forum Mall",
+    online_delivery: "Yes",
+    famous_for: "Aglio Olio"
+},
+{
+    id: 8, name: "Thali Corner",
+    address: {building: "50", street: "Whitefield", area: "Bangalore", pincode: 560066},
+    cuisine: "North Indian Thali",
+    nearby: "ITPL",
+    online_delivery: "Yes",
+    famous_for: "Rajma Chawal"
+},
+{
+    id: 9, name: "Burger Spot",
+    address: {building: "30", street: "BTM Layout", area: "Bangalore", pincode: 560076},
+    cuisine: "Fast Food",
+    nearby: "Silk Board",
+    online_delivery: "Yes",
+    famous_for: "Chicken Burger"
+},
+{
+    id: 10, name: "Masala House",
+    address: {building: "60", street: "Electronic City", area: "Bangalore", pincode: 560100},
+    cuisine: "North Indian Thali",
+    nearby: "Infosys Campus",
+    online_delivery: "Yes",
+    famous_for: "Paneer Tikka"
+}
+])
+
+db.restaurants.find(
+  { "address.area": "Bangalore", cuisine: "Italian" },
+  { name: 1, address: 1, _id: 0 }
+);
+
+
+db.restaurants.find(
+  { "address.area": "Bangalore", cuisine: "North Indian Thali" },
+  { name: 1, address: 1, nearby: 1, _id: 0 }
+);

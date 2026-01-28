@@ -1,0 +1,161 @@
+CREATE TABLE AIRCRAFT (
+    AircraftID INT PRIMARY KEY,
+    Aircraft_name VARCHAR(30),
+    Cruising_range INT
+);
+
+CREATE TABLE EMPLOYEE (
+    EmpID INT PRIMARY KEY,
+    Ename VARCHAR(30),
+    Salary INT
+);
+
+CREATE TABLE CERTIFIED (
+    EmpID INT,
+    AircraftID INT,
+    FOREIGN KEY (EmpID) REFERENCES EMPLOYEE(EmpID),
+    FOREIGN KEY (AircraftID) REFERENCES AIRCRAFT(AircraftID)
+);
+
+INSERT INTO AIRCRAFT VALUES
+(201, 'Boeing 737', 3000),
+(202, 'Airbus A320', 3500),
+(203, 'Fighter F16', 1500),
+(204, 'Jet A500', 2000),
+(205, 'Cargo C777', 5000);
+
+INSERT INTO EMPLOYEE VALUES
+(101, 'Ravi', 75000),
+(102, 'Arjun', 50000),
+(103, 'Meena', 90000),
+(104, 'Kiran', 45000),
+(105, 'Divya', 80000);
+
+INSERT INTO CERTIFIED VALUES
+(101, 201),
+(101, 202),
+(103, 203),
+(105, 201),
+(105, 205);
+
+SELECT EmpID
+FROM EMPLOYEE
+WHERE Salary = (SELECT MAX(Salary) FROM EMPLOYEE);
+
+
+SELECT A.Aircraft_name
+FROM AIRCRAFT A
+WHERE NOT EXISTS (
+    SELECT *
+    FROM CERTIFIED C
+    JOIN EMPLOYEE E ON C.EmpID = E.EmpID
+    WHERE C.AircraftID = A.AircraftID
+    AND E.Salary <= 50000
+);
+
+SELECT E.EmpID, E.Ename
+FROM EMPLOYEE E
+WHERE E.EmpID NOT IN (
+    SELECT C.EmpID
+    FROM CERTIFIED C
+);
+
+______________________________________________________________________________________________
+
+
+use RestaurantDB
+
+db.restaurants.insertMany([
+{
+    id: 1, name: "Taste of Italy",
+    address: {building: "12", street: "MG Road", area: "Bangalore", pincode: 560001},
+    cuisine: "Italian",
+    nearby: "Brigade Road",
+    online_delivery: "Yes",
+    famous_for: "Pasta Alfredo"
+},
+{
+    id: 2, name: "Delhi Thali House",
+    address: {building: "22", street: "VV Puram", area: "Bangalore", pincode: 560004},
+    cuisine: "North Indian Thali",
+    nearby: "KR Market",
+    online_delivery: "No",
+    famous_for: "Special Thali"
+},
+{
+    id: 3, name: "Pizza King",
+    address: {building: "45", street: "Indiranagar", area: "Bangalore", pincode: 560038},
+    cuisine: "Italian",
+    nearby: "CMH Road",
+    online_delivery: "Yes",
+    famous_for: "Cheese Burst Pizza"
+},
+{
+    id: 4, name: "Punjabi Rasoi",
+    address: {building: "78", street: "HSR Layout", area: "Bangalore", pincode: 560102},
+    cuisine: "North Indian Thali",
+    nearby: "Agara Lake",
+    online_delivery: "Yes",
+    famous_for: "Lassi"
+},
+{
+    id: 5, name: "Namma Oota",
+    address: {building: "56", street: "Rajajinagar", area: "Bangalore", pincode: 560010},
+    cuisine: "South Indian",
+    nearby: "Orion Mall",
+    online_delivery: "Yes",
+    famous_for: "Ragi Mudde"
+},
+{
+    id: 6, name: "Bombay Bite",
+    address: {building: "89", street: "Jayanagar", area: "Bangalore", pincode: 560041},
+    cuisine: "North Indian Thali",
+    nearby: "Jayanagar 4th Block",
+    online_delivery: "No",
+    famous_for: "Chole Bhature"
+},
+{
+    id: 7, name: "La Pasta",
+    address: {building: "15", street: "Koramangala", area: "Bangalore", pincode: 560034},
+    cuisine: "Italian",
+    nearby: "Forum Mall",
+    online_delivery: "Yes",
+    famous_for: "Aglio Olio"
+},
+{
+    id: 8, name: "Thali Corner",
+    address: {building: "50", street: "Whitefield", area: "Bangalore", pincode: 560066},
+    cuisine: "North Indian Thali",
+    nearby: "ITPL",
+    online_delivery: "Yes",
+    famous_for: "Rajma Chawal"
+},
+{
+    id: 9, name: "Burger Spot",
+    address: {building: "30", street: "BTM Layout", area: "Bangalore", pincode: 560076},
+    cuisine: "Fast Food",
+    nearby: "Silk Board",
+    online_delivery: "Yes",
+    famous_for: "Chicken Burger"
+},
+{
+    id: 10, name: "Masala House",
+    address: {building: "60", street: "Electronic City", area: "Bangalore", pincode: 560100},
+    cuisine: "North Indian Thali",
+    nearby: "Infosys Campus",
+    online_delivery: "Yes",
+    famous_for: "Paneer Tikka"
+}
+])
+
+db.restaurants.find(
+  { "address.area": "Bangalore", cuisine: "North Indian Thali" },
+  { name: 1, address: 1, nearby: 1, _id: 0 }
+);
+
+
+db.restaurants.find(
+  { "address.area": "Bangalore", online_delivery: "Yes" },
+  { name: 1, address: 1, famous_for: 1, _id: 0 }
+);
+

@@ -1,0 +1,178 @@
+CREATE TABLE EMPLOYEE (
+    Fname VARCHAR(10),
+    Lname VARCHAR(15),
+    Ssn VARCHAR(9) PRIMARY KEY,
+    Bdate DATE,
+    Address VARCHAR(40),
+    Sex CHAR(1),
+    Salary INT,
+    Super_ssn VARCHAR(9),
+    Dno INT
+);
+
+CREATE TABLE DEPARTMENT (
+    Dname VARCHAR(15),
+    Dnumber INT PRIMARY KEY,
+    Mgr_ssn VARCHAR(9),
+    Mgr_start_date DATE,
+    FOREIGN KEY (Mgr_ssn) REFERENCES EMPLOYEE(Ssn)
+);
+
+CREATE TABLE PROJECT (
+    Pnumber INT PRIMARY KEY,
+    Pname VARCHAR(20),
+    Dnum INT,
+    FOREIGN KEY (Dnum) REFERENCES DEPARTMENT(Dnumber)
+);
+
+CREATE TABLE WORKS_ON (
+    Essn VARCHAR(9),
+    Pno INT,
+    Hours INT,
+    PRIMARY KEY(Essn, Pno),
+    FOREIGN KEY (Pno) REFERENCES PROJECT(Pnumber),
+    FOREIGN KEY (Essn) REFERENCES EMPLOYEE(Ssn)
+);
+
+INSERT INTO EMPLOYEE VALUES
+('Ravi', 'K', 101, 'Bangalore', 'M', 60000, NULL, 1),
+('Meena', 'S', 102, 'Mysore', 'F', 55000, 101, 2),
+('Arjun', 'M', 103, 'Bangalore', 'M', 45000, 101, 5),
+('Kiran', 'P', 104, 'Delhi', 'M', 48000, 102, 5),
+('Divya', 'L', 105, 'Mumbai', 'F', 40000, 102, 3);
+
+
+NSERT INTO DEPARTMENT VALUES
+('Research', 1, 101, '2022-01-01'),
+('Admin', 2, 102, '2022-02-01'),
+('HR', 3, 103, '2022-03-01'),
+('Sales', 4, 104, '2022-04-01'),
+('IT', 5, 105, '2022-05-01');
+
+INSERT INTO PROJECT VALUES
+(1, 'Alpha', 5),
+(2, 'Beta', 5),
+(3, 'Gamma', 2),
+(4, 'Delta', 1),
+(5, 'Omega', 3);
+
+INSERT INTO WORKS_ON VALUES
+(101, 1, 10),
+(102, 2, 12),
+(103, 1, 15),
+(104, 3, 18),
+(105, 2, 20);
+
+SELECT Fname, Lname
+FROM EMPLOYEE
+WHERE Salary > ALL (
+    SELECT Salary
+    FROM EMPLOYEE
+    WHERE Dno = 5
+);
+
+SELECT DISTINCT ESSN
+FROM WORKS_ON
+WHERE Pno IN (1, 2, 3);
+
+SELECT Pno, SUM(Hours) AS TotalHours
+FROM WORKS_ON
+GROUP BY Pno;
+
+______________________________________________________________________________________________
+
+use RestaurantDB
+
+db.restaurants.insertMany([
+{
+    id: 1, name: "Taste of Italy",
+    address: {building: "12", street: "MG Road", area: "Bangalore", pincode: 560001},
+    cuisine: "Italian",
+    nearby: "Brigade Road",
+    online_delivery: "Yes",
+    famous_for: "Pasta Alfredo"
+},
+{
+    id: 2, name: "Delhi Thali House",
+    address: {building: "22", street: "VV Puram", area: "Bangalore", pincode: 560004},
+    cuisine: "North Indian Thali",
+    nearby: "KR Market",
+    online_delivery: "No",
+    famous_for: "Special Thali"
+},
+{
+    id: 3, name: "Pizza King",
+    address: {building: "45", street: "Indiranagar", area: "Bangalore", pincode: 560038},
+    cuisine: "Italian",
+    nearby: "CMH Road",
+    online_delivery: "Yes",
+    famous_for: "Cheese Burst Pizza"
+},
+{
+    id: 4, name: "Punjabi Rasoi",
+    address: {building: "78", street: "HSR Layout", area: "Bangalore", pincode: 560102},
+    cuisine: "North Indian Thali",
+    nearby: "Agara Lake",
+    online_delivery: "Yes",
+    famous_for: "Lassi"
+},
+{
+    id: 5, name: "Namma Oota",
+    address: {building: "56", street: "Rajajinagar", area: "Bangalore", pincode: 560010},
+    cuisine: "South Indian",
+    nearby: "Orion Mall",
+    online_delivery: "Yes",
+    famous_for: "Ragi Mudde"
+},
+{
+    id: 6, name: "Bombay Bite",
+    address: {building: "89", street: "Jayanagar", area: "Bangalore", pincode: 560041},
+    cuisine: "North Indian Thali",
+    nearby: "Jayanagar 4th Block",
+    online_delivery: "No",
+    famous_for: "Chole Bhature"
+},
+{
+    id: 7, name: "La Pasta",
+    address: {building: "15", street: "Koramangala", area: "Bangalore", pincode: 560034},
+    cuisine: "Italian",
+    nearby: "Forum Mall",
+    online_delivery: "Yes",
+    famous_for: "Aglio Olio"
+},
+{
+    id: 8, name: "Thali Corner",
+    address: {building: "50", street: "Whitefield", area: "Bangalore", pincode: 560066},
+    cuisine: "North Indian Thali",
+    nearby: "ITPL",
+    online_delivery: "Yes",
+    famous_for: "Rajma Chawal"
+},
+{
+    id: 9, name: "Burger Spot",
+    address: {building: "30", street: "BTM Layout", area: "Bangalore", pincode: 560076},
+    cuisine: "Fast Food",
+    nearby: "Silk Board",
+    online_delivery: "Yes",
+    famous_for: "Chicken Burger"
+},
+{
+    id: 10, name: "Masala House",
+    address: {building: "60", street: "Electronic City", area: "Bangalore", pincode: 560100},
+    cuisine: "North Indian Thali",
+    nearby: "Infosys Campus",
+    online_delivery: "Yes",
+    famous_for: "Paneer Tikka"
+}
+])
+
+db.restaurants.find(
+  { "address.area": "Bangalore", cuisine: "North Indian Thali" },
+  { name: 1, address: 1, nearby: 1, _id: 0 }
+);
+
+
+db.restaurants.find(
+  { "address.area": "Bangalore" },
+  { name: 1, address: 1, famous_for: 1, _id: 0 }
+);
